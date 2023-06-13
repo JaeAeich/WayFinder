@@ -1,0 +1,23 @@
+# build and modules
+node_modules/
+dist/
+
+# Configuration files
+.eslintrc.cjs
+.prettierrc
+
+# misc
+.DS_Store
+.env
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+logs
+*.log
+npm-debug.log*
