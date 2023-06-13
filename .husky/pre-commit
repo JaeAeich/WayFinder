@@ -3,3 +3,4 @@
 
 # Lint and format
 npm run lint 
+git add .
