@@ -1,5 +1,9 @@
 function App() {
-  return <>Welcome to WayFinder</>;
+  return (
+    <>
+      <div>Welcome to WayFinder</div>
+    </>
+  );
 }
 
 export default App;
