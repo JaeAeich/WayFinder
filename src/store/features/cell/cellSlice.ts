@@ -8,7 +8,7 @@ export type CellState = {
 };
 
 const initialState: CellState = {
-  cells: cellInitializer(10, 10, 4),
+  cells: cellInitializer(10, 10, 10),
   isLoading: false,
 };
 
@@ -16,12 +16,62 @@ const cellSlice = createSlice({
   name: 'cellGrid',
   initialState,
   reducers: {
+    /**
+     * This action sets a new grid of cells
+     * @param state Store
+     * @param action object, takes in "dimension" of the new cell, number
+     * of rows, "rowNum" of new grid, and number of columns "colNum", in new grid.
+     */
+    resizeCellGrid: (state, action) => {
+      state.isLoading = true;
+      const { dimension, rowNum, colNum } = action.payload;
+      state.cells = cellInitializer(dimension, rowNum, colNum);
+      state.isLoading = false;
+    },
+
+    /**
+     * This action sets if the gridCell is Loading or not
+     * @param state store, nothing to pass
+     */
     setLoading: (state) => {
       state.isLoading = true;
+    },
+
+    /**
+     * This action is used to set a cell as wall
+     * @param state store, no to be passes
+     * @param action object, takes in i, j of the cell to set it as wall
+     */
+    setWall: (state, action) => {
+      const { i, j } = action.payload;
+      const updatedCells = [...state.cells]; // Create a shallow copy of the cells array
+      updatedCells[i] = [...state.cells[i]]; // Create a shallow copy of the row array
+      updatedCells[i][j] = {
+        ...state.cells[i][j], // Create a shallow copy of the cell object
+        isWall: !state.cells[i][j].isWall, // Update the isWall property
+      };
+      state.cells = updatedCells;
+    },
+
+    /**
+     * This action is used to set the cell as visited
+     * @param state store, not to be passed
+     * @param action object, takes in i, j of the cell to set is as visited
+     */
+    setVis: (state, action) => {
+      const { i, j } = action.payload;
+      const updatedCells = [...state.cells]; // Create a shallow copy of the cells array
+      updatedCells[i] = [...state.cells[i]]; // Create a shallow copy of the row array
+      updatedCells[i][j] = {
+        ...state.cells[i][j], // Create a shallow copy of the cell object
+        isVis: !state.cells[i][j].isVis, // Update the isVis property
+      };
+      state.cells = updatedCells;
     },
   },
 });
 
-export const { setLoading } = cellSlice.actions;
+export const { setLoading, resizeCellGrid, setWall, setVis } =
+  cellSlice.actions;
 
 export default cellSlice.reducer;
