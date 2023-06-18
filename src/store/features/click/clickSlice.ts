@@ -2,12 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export type ClickState = {
   clickOption: string;
+  positionSelectOption: string;
   startIndex: number[];
   endIndex: number[];
 };
 
 const initialState: ClickState = {
   clickOption: 'no',
+  positionSelectOption: 'start',
   startIndex: [],
   endIndex: [],
 };
@@ -26,6 +28,15 @@ const clickSlice = createSlice({
     },
 
     /**
+     * Used to enable setting position of cell, startIndex or endIndex
+     * @param state store, not ot be passed
+     * @param action object, has payload for position options : "start", "end"
+     */
+    setPositionSelectOption: (state, action) => {
+      state.positionSelectOption = action.payload;
+    },
+
+    /**
      * Used to set initial position to start the algo
      * @param state store, not to be passed
      * @param action object, payload passed has start point for algo, [i,j]
@@ -40,11 +51,15 @@ const clickSlice = createSlice({
      * @param action object, payload passed has end point for algo, [i,j]
      */
     setEndIndex: (state, action) => {
-      state.startIndex = action.payload;
+      state.endIndex = action.payload;
     },
   },
 });
-export const { setClickOption, setStartIndex, setEndIndex } =
-  clickSlice.actions;
+export const {
+  setClickOption,
+  setStartIndex,
+  setEndIndex,
+  setPositionSelectOption,
+} = clickSlice.actions;
 
 export default clickSlice.reducer;

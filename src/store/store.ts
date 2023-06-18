@@ -9,4 +9,9 @@ export const store = configureStore({
     cellGrid: cellReducer,
     click: clickReducer,
   },
+  // remove non serializable error
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });

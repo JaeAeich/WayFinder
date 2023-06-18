@@ -3,15 +3,26 @@ import { ToggleButtonGroup, ToggleButton } from '@mui/material';
 import AdsClickOutlinedIcon from '@mui/icons-material/AdsClickOutlined';
 import MouseOutlinedIcon from '@mui/icons-material/MouseOutlined';
 import DoNotTouchOutlinedIcon from '@mui/icons-material/DoNotTouchOutlined';
+import DirectionsRunRoundedIcon from '@mui/icons-material/DirectionsRunRounded';
+import FlagCircleTwoToneIcon from '@mui/icons-material/FlagCircleTwoTone';
 import { RootState } from '../store/store';
-import { setClickOption } from '../store/features/click/clickSlice';
+import {
+  setClickOption,
+  setPositionSelectOption,
+} from '../store/features/click/clickSlice';
 
 function Navbar() {
   const dispatch = useDispatch();
-  const { clickOption } = useSelector((state: RootState) => state.click);
+  const { clickOption, positionSelectOption } = useSelector(
+    (state: RootState) => state.click
+  );
 
   const handleClickToggle = (selectedValue: string) => {
     dispatch(setClickOption(selectedValue[0]));
+  };
+
+  const handleSelectOptionToggel = (positionSelectValue: string) => {
+    dispatch(setPositionSelectOption(positionSelectValue[0]));
   };
 
   return (
@@ -19,36 +30,60 @@ function Navbar() {
       <div className="logo">WayFinder</div>
       <div className="options">
         <div className="gridOption">
-          <ToggleButtonGroup
-            size="small"
-            aria-label="Small sizes"
-            onChange={(_, newValue) => handleClickToggle(newValue)}
-          >
-            <ToggleButton
-              color="success"
-              value="click"
-              selected={clickOption == 'click'}
-              aria-label="click"
+          <div className="click-select">
+            <ToggleButtonGroup
+              size="small"
+              aria-label="Small sizes"
+              onChange={(_, newValue) => handleClickToggle(newValue)}
             >
-              <AdsClickOutlinedIcon fontSize="small"></AdsClickOutlinedIcon>
-            </ToggleButton>
-            <ToggleButton
-              color="success"
-              value="drag"
-              selected={clickOption == 'drag'}
+              <ToggleButton
+                color="success"
+                value="click"
+                selected={clickOption == 'click'}
+                aria-label="click"
+              >
+                <AdsClickOutlinedIcon fontSize="small"></AdsClickOutlinedIcon>
+              </ToggleButton>
+              <ToggleButton
+                color="success"
+                value="drag"
+                selected={clickOption == 'drag'}
+              >
+                <div className="slot">
+                  <MouseOutlinedIcon fontSize="small"></MouseOutlinedIcon>
+                </div>
+              </ToggleButton>
+              <ToggleButton
+                color="warning"
+                value="no"
+                selected={clickOption == 'no'}
+              >
+                <DoNotTouchOutlinedIcon fontSize="small"></DoNotTouchOutlinedIcon>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+          <div className="position-select">
+            <ToggleButtonGroup
+              size="small"
+              aria-label="Small sizes"
+              onChange={(_, newValue) => handleSelectOptionToggel(newValue)}
             >
-              <div className="slot">
-                <MouseOutlinedIcon fontSize="small"></MouseOutlinedIcon>
-              </div>
-            </ToggleButton>
-            <ToggleButton
-              color="warning"
-              value="no"
-              selected={clickOption == 'no'}
-            >
-              <DoNotTouchOutlinedIcon fontSize="small"></DoNotTouchOutlinedIcon>
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <ToggleButton
+                color="primary"
+                value="start"
+                selected={positionSelectOption == 'start'}
+              >
+                <DirectionsRunRoundedIcon fontSize="small"></DirectionsRunRoundedIcon>
+              </ToggleButton>
+              <ToggleButton
+                color="primary"
+                value="end"
+                selected={positionSelectOption == 'end'}
+              >
+                <FlagCircleTwoToneIcon fontSize="small"></FlagCircleTwoToneIcon>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
         </div>
         <div className="algoOption"></div>
       </div>
