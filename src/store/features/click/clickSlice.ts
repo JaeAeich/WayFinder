@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export type ClickState = {
   clickOption: string;
+  algorithm: string;
   positionSelectOption: string;
   startIndex: number[];
   endIndex: number[];
@@ -10,6 +11,7 @@ export type ClickState = {
 const initialState: ClickState = {
   clickOption: 'no',
   positionSelectOption: 'start',
+  algorithm: 'BFS',
   startIndex: [],
   endIndex: [],
 };
@@ -53,6 +55,14 @@ const clickSlice = createSlice({
     setEndIndex: (state, action) => {
       state.endIndex = action.payload;
     },
+    /**
+     * Used to set algorithm name
+     * @param state store, not to be passed
+     * @param action object, payload passed has algorihtm name
+     */
+    setAlgo: (state, action) => {
+      state.algorithm = action.payload;
+    },
   },
 });
 export const {
@@ -60,6 +70,7 @@ export const {
   setStartIndex,
   setEndIndex,
   setPositionSelectOption,
+  setAlgo,
 } = clickSlice.actions;
 
 export default clickSlice.reducer;
