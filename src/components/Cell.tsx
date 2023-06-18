@@ -2,11 +2,8 @@ import { CellType } from '../logic/GridBlock/GridBlock';
 import { useDispatch, useSelector } from 'react-redux';
 import { setWall } from '../store/features/cell/cellSlice';
 import { RootState } from '../store/store';
-// import { useEffect, useState } from 'react';
 
 function Cell(props: CellType) {
-  //   const [cellWall, setCellWall] = useState(false);
-
   // Get the cordinates of the cell
   const { i, j } = props;
   const dispatch = useDispatch();
@@ -16,11 +13,18 @@ function Cell(props: CellType) {
     (state: RootState) => state.cellGrid.cells[i][j]
   );
 
-  // Change the isWall property of this cell
-  const handleSetWall = () => {
-    console.log('handler called');
-    dispatch(setWall({ i, j }));
-    console.log('isWall here is: ', isWall);
+  const { clickOption } = useSelector((state: RootState) => state.click);
+
+  // Handle cell drag, on mouse enter the cell becomes a wall
+  const handleCellDrag = () => {
+    if (clickOption !== 'no' && clickOption === 'drag')
+      dispatch(setWall({ i, j }));
+  };
+
+  // Handle cell click, on mouse click the cell becomes a wall
+  const handleCellClick = () => {
+    if (clickOption !== 'no' && clickOption === 'click')
+      dispatch(setWall({ i, j }));
   };
 
   return (
@@ -28,7 +32,8 @@ function Cell(props: CellType) {
       className={`cell w-6 h-6 ${
         isWall ? 'bg-red-400' : 'bg-gray-200'
       } border-2 border-white active:bg-red-200`}
-      onMouseEnter={() => handleSetWall()}
+      onMouseEnter={() => handleCellDrag()}
+      onClick={() => handleCellClick()}
     ></div>
   );
 }
