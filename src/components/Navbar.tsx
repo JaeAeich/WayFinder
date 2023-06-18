@@ -22,7 +22,7 @@ function Navbar() {
           <ToggleButtonGroup
             size="small"
             aria-label="Small sizes"
-            onChange={(event, newValue) => handleClickToggle(newValue)}
+            onChange={(_, newValue) => handleClickToggle(newValue)}
           >
             <ToggleButton
               color="success"
