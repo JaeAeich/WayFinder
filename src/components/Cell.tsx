@@ -21,18 +21,35 @@ function Cell(props: CellType) {
 
   // Handle cell drag, on mouse enter the cell becomes a wall
   const handleCellDrag = () => {
-    if (clickOption !== 'no' && clickOption === 'drag')
+    if (
+      // Start and end positions can't be walls
+      startIndex[0] !== i &&
+      startIndex[1] !== j &&
+      endIndex[0] !== i &&
+      endIndex[0] !== j &&
+      clickOption !== 'no' &&
+      clickOption === 'drag'
+    )
       dispatch(setWall({ i, j }));
   };
 
   // Handle cell click, on mouse click the cell becomes a wall
   const handleCellClick = () => {
-    if (clickOption !== 'no' && clickOption === 'click')
+    if (
+      // Start and end positions can't be walls
+      startIndex[0] !== i &&
+      startIndex[1] !== j &&
+      endIndex[0] !== i &&
+      endIndex[0] !== j &&
+      clickOption !== 'no' &&
+      clickOption === 'click'
+    )
       dispatch(setWall({ i, j }));
   };
 
   // Handle setting of start/end position
   const handledblClick = () => {
+    if (isWall) dispatch(setWall({ i, j }));
     if (positionSelectOption === 'start') {
       dispatch(setStartIndex([i, j]));
     } else dispatch(setEndIndex([i, j]));
@@ -44,6 +61,9 @@ function Cell(props: CellType) {
         isWall ? 'bg-red-400' : 'bg-gray-200'
       } border-2 border-white active:bg-red-200`}
       onMouseEnter={() => handleCellDrag()}
+      onTouchMove={() => handleCellDrag()}
+      onTouchStart={() => handleCellDrag()}
+      onTouchEnd={() => handleCellDrag()}
       onClick={() => handleCellClick()}
       onDoubleClick={() => handledblClick()}
     >
