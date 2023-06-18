@@ -16,17 +16,26 @@ function CellContainer() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const containerWidth = containerRef.current?.offsetWidth || 0;
-    const containerHeight = containerRef.current?.offsetHeight || 0;
-    const cellDimension = containerWidth / Math.floor(containerWidth / 24);
-    // Use the containerWidth for any further calculations or updates
-    dispatch(
-      resizeCellGrid({
-        dimension: Math.floor(cellDimension),
-        rowNum: Math.floor(containerWidth / cellDimension),
-        colNum: Math.floor(containerHeight / cellDimension),
-      })
-    );
+    const handleResize = () => {
+      const containerWidth = containerRef.current?.offsetWidth || 0;
+      const containerHeight = containerRef.current?.offsetHeight || 0;
+      const cellDimension = containerWidth / Math.floor(containerWidth / 24);
+      dispatch(
+        resizeCellGrid({
+          dimension: Math.floor(cellDimension),
+          rowNum: Math.floor(containerWidth / cellDimension),
+          colNum: Math.floor(containerHeight / cellDimension),
+        })
+      );
+    };
+
+    handleResize(); // Initial resize
+
+    window.addEventListener('resize', handleResize); // Add event listener for window resize
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
+    };
   }, [dispatch]);
 
   if (isLoading) {
