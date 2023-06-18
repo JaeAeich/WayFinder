@@ -1,5 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { ToggleButtonGroup, ToggleButton } from '@mui/material';
+import {
+  ToggleButtonGroup,
+  ToggleButton,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  SelectChangeEvent,
+} from '@mui/material';
 import AdsClickOutlinedIcon from '@mui/icons-material/AdsClickOutlined';
 import MouseOutlinedIcon from '@mui/icons-material/MouseOutlined';
 import DoNotTouchOutlinedIcon from '@mui/icons-material/DoNotTouchOutlined';
@@ -7,13 +15,14 @@ import DirectionsRunRoundedIcon from '@mui/icons-material/DirectionsRunRounded';
 import FlagCircleTwoToneIcon from '@mui/icons-material/FlagCircleTwoTone';
 import { RootState } from '../store/store';
 import {
+  setAlgo,
   setClickOption,
   setPositionSelectOption,
 } from '../store/features/click/clickSlice';
 
 function Navbar() {
   const dispatch = useDispatch();
-  const { clickOption, positionSelectOption } = useSelector(
+  const { clickOption, positionSelectOption, algorithm } = useSelector(
     (state: RootState) => state.click
   );
 
@@ -25,11 +34,16 @@ function Navbar() {
     dispatch(setPositionSelectOption(positionSelectValue[0]));
   };
 
+  const handleAlgoChange = (event: SelectChangeEvent) => {
+    console.log(event.target.value as string);
+    dispatch(setAlgo(event.target.value as string));
+  };
+
   return (
     <div className="navbar w-full h-full">
       <div className="logo">WayFinder</div>
-      <div className="options">
-        <div className="gridOption">
+      <div className="options flex">
+        <div className="gridOption flex">
           <div className="click-select">
             <ToggleButtonGroup
               size="small"
@@ -85,7 +99,22 @@ function Navbar() {
             </ToggleButtonGroup>
           </div>
         </div>
-        <div className="algoOption"></div>
+        <div className="algoOption">
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Algorithm</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={algorithm}
+              label="Algorithm"
+              onChange={handleAlgoChange}
+            >
+              <MenuItem value="BFS">BFS</MenuItem>
+              <MenuItem value="DFS">DFS</MenuItem>
+              <MenuItem value="DJIKS">DJIKSTRA</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
       </div>
     </div>
   );
