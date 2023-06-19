@@ -12,7 +12,7 @@ function Cell(props: CellType) {
   const dispatch = useDispatch();
 
   // Get the isWall property of this cell from store
-  const { isWall } = useSelector(
+  const { isWall, isVis } = useSelector(
     (state: RootState) => state.cellGrid.cells[i][j]
   );
 
@@ -57,8 +57,10 @@ function Cell(props: CellType) {
 
   return (
     <div
-      className={`cell w-6 h-6 ${
-        isWall ? 'bg-red-400' : 'bg-gray-200'
+      className={`cell w-6 h-6 transition-colors ${
+        isWall ? 'bg-red-400' : ''
+      } ${
+        isVis ? 'bg-blue-400' : 'bg-gray-200'
       } border-2 border-white active:bg-red-200`}
       onMouseEnter={() => handleCellDrag()}
       onTouchMove={() => handleCellDrag()}

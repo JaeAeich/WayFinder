@@ -7,6 +7,7 @@ import {
   MenuItem,
   InputLabel,
   SelectChangeEvent,
+  Button,
 } from '@mui/material';
 import AdsClickOutlinedIcon from '@mui/icons-material/AdsClickOutlined';
 import MouseOutlinedIcon from '@mui/icons-material/MouseOutlined';
@@ -19,12 +20,14 @@ import {
   setClickOption,
   setPositionSelectOption,
 } from '../store/features/click/clickSlice';
+import { setVis } from '../store/features/cell/cellSlice';
+import DFS from '../logic/Algorithm/DFS';
 
 function Navbar() {
   const dispatch = useDispatch();
-  const { clickOption, positionSelectOption, algorithm } = useSelector(
-    (state: RootState) => state.click
-  );
+  const { clickOption, positionSelectOption, algorithm, startIndex, endIndex } =
+    useSelector((state: RootState) => state.click);
+  const { cells } = useSelector((state: RootState) => state.cellGrid);
 
   const handleClickToggle = (selectedValue: string) => {
     dispatch(setClickOption(selectedValue[0]));
@@ -37,6 +40,11 @@ function Navbar() {
   const handleAlgoChange = (event: SelectChangeEvent) => {
     console.log(event.target.value as string);
     dispatch(setAlgo(event.target.value as string));
+  };
+
+  const handleStartClick = () => {
+    //implement DFS from startIndex to endIndex
+    DFS({ cells, startIndex, endIndex, dispatch, setVis });
   };
 
   return (
@@ -115,6 +123,9 @@ function Navbar() {
             </Select>
           </FormControl>
         </div>
+        <Button variant="outlined" onClick={handleStartClick}>
+          Start
+        </Button>
       </div>
     </div>
   );
