@@ -23,10 +23,8 @@ function Cell(props: CellType) {
   const handleCellDrag = () => {
     if (
       // Start and end positions can't be walls
-      startIndex[0] !== i &&
-      startIndex[1] !== j &&
-      endIndex[0] !== i &&
-      endIndex[0] !== j &&
+      (startIndex[0] !== i || startIndex[1] !== j) &&
+      (endIndex[0] !== i || endIndex[0] !== j) &&
       clickOption !== 'no' &&
       clickOption === 'drag'
     )
@@ -37,10 +35,8 @@ function Cell(props: CellType) {
   const handleCellClick = () => {
     if (
       // Start and end positions can't be walls
-      startIndex[0] !== i &&
-      startIndex[1] !== j &&
-      endIndex[0] !== i &&
-      endIndex[0] !== j &&
+      (startIndex[0] !== i || startIndex[1] !== j) &&
+      (endIndex[0] !== i || endIndex[0] !== j) &&
       clickOption !== 'no' &&
       clickOption === 'click'
     )
@@ -49,10 +45,12 @@ function Cell(props: CellType) {
 
   // Handle setting of start/end position
   const handledblClick = () => {
-    if (isWall) dispatch(setWall({ i, j }));
-    if (positionSelectOption === 'start') {
-      dispatch(setStartIndex([i, j]));
-    } else dispatch(setEndIndex([i, j]));
+    if (clickOption === 'no') {
+      if (isWall) dispatch(setWall({ i, j }));
+      if (positionSelectOption === 'start') {
+        dispatch(setStartIndex([i, j]));
+      } else dispatch(setEndIndex([i, j]));
+    }
   };
 
   return (
@@ -68,6 +66,7 @@ function Cell(props: CellType) {
       onTouchEnd={() => handleCellDrag()}
       onClick={() => handleCellClick()}
       onDoubleClick={() => handledblClick()}
+      onTouchStartCapture={() => handledblClick()}
     >
       {startIndex[0] === i && startIndex[1] === j && (
         <DirectionsRunRoundedIcon />
