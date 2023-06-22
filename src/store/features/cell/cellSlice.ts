@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { CellType } from '../../../logic/GridBlock/GridBlock';
 import cellInitializer from '../../data';
 
@@ -11,6 +11,15 @@ const initialState: CellState = {
   cells: cellInitializer(10, 10, 10),
   isLoading: false,
 };
+
+export const setVisAsync = createAsyncThunk(
+  'cell/setWall',
+  async ({ i, j }: { i: number; j: number }) => {
+    console.log(i, j);
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    return { i, j };
+  }
+);
 
 const cellSlice = createSlice({
   name: 'cellGrid',
@@ -65,6 +74,22 @@ const cellSlice = createSlice({
       updatedCells[i][j] = {
         ...state.cells[i][j], // Create a shallow copy of the cell object
         isVis: !state.cells[i][j].isVis, // Update the isVis property
+      };
+      state.cells = updatedCells;
+    },
+  },
+  extraReducers: {
+    [setVisAsync.pending.toString()]: (_, action) => {
+      console.log('pending', action.payload);
+    },
+    [setVisAsync.fulfilled.toString()]: (state, action) => {
+      console.log('fufillerd', action.payload);
+      const { i, j } = action.payload;
+      const updatedCells = [...state.cells]; // Create a shallow copy of the cells array
+      updatedCells[i] = [...state.cells[i]]; // Create a shallow copy of the row array
+      updatedCells[i][j] = {
+        ...state.cells[i][j], // Create a shallow copy of the cell object
+        isVis: !state.cells[i][j].isVis, // Update the isWall property
       };
       state.cells = updatedCells;
     },
