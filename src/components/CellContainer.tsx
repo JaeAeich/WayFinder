@@ -23,7 +23,7 @@ function CellContainer() {
       dispatch(
         resizeCellGrid({
           dimension: Math.floor(cellDimension),
-          rowNum: Math.floor(containerWidth / cellDimension),
+          rowNum: Math.min(Math.floor(containerWidth / cellDimension), 50),
           colNum: Math.floor(containerHeight / cellDimension),
         })
       );
