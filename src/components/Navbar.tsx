@@ -26,7 +26,6 @@ function Navbar() {
   const dispatch = useDispatch();
   const { clickOption, positionSelectOption, algorithm, startIndex, endIndex } =
     useSelector((state: RootState) => state.click);
-  const { cells } = useSelector((state: RootState) => state.cellGrid);
 
   const handleClickToggle = (selectedValue: string) => {
     dispatch(setClickOption(selectedValue[0]));
@@ -42,8 +41,7 @@ function Navbar() {
   };
 
   const handleStartClick = async () => {
-    //implement DFS from startIndex to endIndex
-    await DFS({ cells, startIndex, endIndex, dispatch });
+    if (algorithm === 'DFS') await DFS({ startIndex, endIndex });
   };
 
   return (
