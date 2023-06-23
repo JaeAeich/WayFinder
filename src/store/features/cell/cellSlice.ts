@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { CellType } from '../../../logic/GridBlock/GridBlock';
 import cellInitializer from '../../data';
+import { RootState } from '../../store';
 
 export type CellState = {
   cells: CellType[][];
@@ -12,13 +13,20 @@ const initialState: CellState = {
   isLoading: false,
 };
 
+/**
+ * Async thunk for setting isVis of a cell.
+ */
 export const setVisAsync = createAsyncThunk(
   'cell/setWall',
-  async ({ i, j }: { i: number; j: number }) => {
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1);
+  async ({ i, j }: { i: number; j: number }, { getState }) => {
+    const state = getState() as RootState; // Define rootState with appropriate type
+    return new Promise<{ i: number; j: number }>((resolve, reject) => {
+      // TODO: Maybe I can use setTimeout to set speed of the algo.
+      setTimeout(() => {
+        if (state.cellGrid.cells[i][j].isVis === false) resolve({ i, j });
+        else reject();
+      }, 1);
     });
-    return { i, j };
   }
 );
 
@@ -80,15 +88,27 @@ const cellSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(setVisAsync.pending, () => {
+      // Perform actions in pending if need be in future
+    });
     builder.addCase(setVisAsync.fulfilled, (state, action) => {
       const { i, j } = action.payload;
+
+      // Create a shallow copy of the cells array
       const updatedCells = [...state.cells];
+
+      // Create a shallow copy of the row array
       updatedCells[i] = [...state.cells[i]];
       updatedCells[i][j] = {
+        // Create a shallow copy of the cell object
         ...state.cells[i][j],
-        isVis: true,
+        // Update the isVis property
+        isVis: !state.cells[i][j].isVis,
       };
       state.cells = updatedCells;
+    });
+    builder.addCase(setVisAsync.rejected, () => {
+      // Perform actions in rejected if need be in future
     });
   },
 });
