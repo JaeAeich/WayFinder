@@ -1,24 +1,21 @@
+import { RootState, store } from '../../store/store';
 import { setVisAsync } from '../../store/features/cell/cellSlice';
-import { CellType } from '../GridBlock/GridBlock';
 
 type DFSParams = {
-  cells: CellType[][];
   startIndex: number[];
   endIndex: number[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatch: (action: any) => void;
 };
 
-const hash: Record<string, boolean> = {};
-
-const depthFirstSearch = async ({
-  cells,
-  startIndex,
-  endIndex,
-  dispatch,
-}: DFSParams) => {
-  const numRows = cells.length;
-  const numCols = cells[0].length;
+const depthFirstSearch = async ({ startIndex, endIndex }: DFSParams) => {
+  const state = store.getState() as RootState;
+  const numRows = state.cellGrid.cells.length;
+  const numCols = state.cellGrid.cells[0].length;
+  const visited: boolean[][] = Array.from({ length: numRows }, () =>
+    Array(numCols).fill(false)
+  );
+  const havePushed: boolean[][] = Array.from({ length: numRows }, () =>
+    Array(numCols).fill(false)
+  );
 
   const isValid = (i: number, j: number) => {
     return (
@@ -26,40 +23,41 @@ const depthFirstSearch = async ({
       i < numRows &&
       j >= 0 &&
       j < numCols &&
-      !hash[`${i}-${j}`] &&
-      !cells[i][j].isVis &&
-      !cells[i][j].isWall
+      !visited[i][j] &&
+      !havePushed[i][j] &&
+      !state.cellGrid.cells[i][j].isVis &&
+      !state.cellGrid.cells[i][j].isWall
     );
   };
 
-  const dfsIterative = async () => {
-    const stack: [number, number][] = [[startIndex[0], startIndex[1]]];
-    while (stack.length > 0) {
-      const [i, j] = stack.pop()!;
-      if (i === endIndex[0] && j === endIndex[1]) {
-        console.log('end');
-        return true;
-      }
-      await dispatch(setVisAsync({ i, j }));
-      hash[`${i}-${j}`] = true;
+  const stack: [number, number][] = [[startIndex[0], startIndex[1]]];
+  havePushed[startIndex[0]][startIndex[1]] = true;
+  while (stack.length > 0) {
+    console.log(stack);
+    const [i, j] = stack.pop() || [-1, -1];
+    if (i === endIndex[0] && j === endIndex[1]) {
+      console.log('end');
+      return true;
+    }
 
-      const neighbors: [number, number][] = [
-        [i - 1, j], // Up
-        [i + 1, j], // Down
-        [i, j - 1], // Left
-        [i, j + 1], // Right
-      ];
+    await store.dispatch(setVisAsync({ i, j }));
+    visited[i][j] = true;
 
-      for (const [ni, nj] of neighbors) {
-        if (isValid(ni, nj)) {
-          stack.push([ni, nj]);
-        }
+    const neighbors: [number, number][] = [
+      [i - 1, j], // Up
+      [i + 1, j], // Down
+      [i, j - 1], // Left
+      [i, j + 1], // Right
+    ];
+
+    for (const [ni, nj] of neighbors) {
+      if (isValid(ni, nj)) {
+        havePushed[i][j] = true;
+        stack.push([ni, nj]);
       }
     }
-    return false;
-  };
-
-  await dfsIterative();
+  }
+  return false;
 };
 
 export default depthFirstSearch;
