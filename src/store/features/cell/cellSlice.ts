@@ -15,8 +15,9 @@ const initialState: CellState = {
 export const setVisAsync = createAsyncThunk(
   'cell/setWall',
   async ({ i, j }: { i: number; j: number }) => {
-    console.log(i, j);
-    await new Promise((resolve) => setTimeout(resolve, 1));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1);
+    });
     return { i, j };
   }
 );
@@ -78,21 +79,17 @@ const cellSlice = createSlice({
       state.cells = updatedCells;
     },
   },
-  extraReducers: {
-    [setVisAsync.pending.toString()]: (_, action) => {
-      console.log('pending', action.payload);
-    },
-    [setVisAsync.fulfilled.toString()]: (state, action) => {
-      console.log('fufillerd', action.payload);
+  extraReducers: (builder) => {
+    builder.addCase(setVisAsync.fulfilled, (state, action) => {
       const { i, j } = action.payload;
-      const updatedCells = [...state.cells]; // Create a shallow copy of the cells array
-      updatedCells[i] = [...state.cells[i]]; // Create a shallow copy of the row array
+      const updatedCells = [...state.cells];
+      updatedCells[i] = [...state.cells[i]];
       updatedCells[i][j] = {
-        ...state.cells[i][j], // Create a shallow copy of the cell object
-        isVis: !state.cells[i][j].isVis, // Update the isWall property
+        ...state.cells[i][j],
+        isVis: true,
       };
       state.cells = updatedCells;
-    },
+    });
   },
 });
 

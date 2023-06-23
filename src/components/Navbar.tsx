@@ -20,7 +20,6 @@ import {
   setClickOption,
   setPositionSelectOption,
 } from '../store/features/click/clickSlice';
-import { setVis } from '../store/features/cell/cellSlice';
 import DFS from '../logic/Algorithm/DFS';
 
 function Navbar() {
@@ -42,9 +41,9 @@ function Navbar() {
     dispatch(setAlgo(event.target.value as string));
   };
 
-  const handleStartClick = () => {
+  const handleStartClick = async () => {
     //implement DFS from startIndex to endIndex
-    DFS({ cells, startIndex, endIndex, dispatch, setVis });
+    await DFS({ cells, startIndex, endIndex, dispatch });
   };
 
   return (

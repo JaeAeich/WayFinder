@@ -1,6 +1,5 @@
+import { setVisAsync } from '../../store/features/cell/cellSlice';
 import { CellType } from '../GridBlock/GridBlock';
-
-type SetVisFunction = (coordinates: { i: number; j: number }) => void;
 
 type DFSParams = {
   cells: CellType[][];
@@ -8,55 +7,59 @@ type DFSParams = {
   endIndex: number[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: (action: any) => void;
-  setVis: SetVisFunction;
 };
 
-const depthFirstSearch = ({
-  // cells,
+const hash: Record<string, boolean> = {};
+
+const depthFirstSearch = async ({
+  cells,
   startIndex,
   endIndex,
-}: // dispatch,
-// setVis,
-DFSParams) => {
-  const stack: number[][] = [];
+  dispatch,
+}: DFSParams) => {
+  const numRows = cells.length;
+  const numCols = cells[0].length;
 
-  // const numRows = cells.length;
-  // const numCols = cells[0].length;
+  const isValid = (i: number, j: number) => {
+    return (
+      i >= 0 &&
+      i < numRows &&
+      j >= 0 &&
+      j < numCols &&
+      !hash[`${i}-${j}`] &&
+      !cells[i][j].isVis &&
+      !cells[i][j].isWall
+    );
+  };
 
-  // const isValid = (i: number, j: number) => {
-  //   return i >= 0 && i < numRows && j >= 0 && j < numCols;
-  // };
+  const dfsIterative = async () => {
+    const stack: [number, number][] = [[startIndex[0], startIndex[1]]];
+    while (stack.length > 0) {
+      const [i, j] = stack.pop()!;
+      if (i === endIndex[0] && j === endIndex[1]) {
+        console.log('end');
+        return true;
+      }
+      await dispatch(setVisAsync({ i, j }));
+      hash[`${i}-${j}`] = true;
 
-  stack.push(startIndex);
+      const neighbors: [number, number][] = [
+        [i - 1, j], // Up
+        [i + 1, j], // Down
+        [i, j - 1], // Left
+        [i, j + 1], // Right
+      ];
 
-  while (stack.length > 0) {
-    const [i, j] = stack.pop() || [0, 0];
-    if (i === endIndex[0] && j === endIndex[1]) {
-      console.log('end');
-      // Reached the end node
-      return;
+      for (const [ni, nj] of neighbors) {
+        if (isValid(ni, nj)) {
+          stack.push([ni, nj]);
+        }
+      }
     }
-    // // TODO: This needs to be asynch, set thunk first
-    // if (!cells[i][j].isVis && !cells[i][j].isWall) {
-    //   setTimeout(() => {
-    //     dispatch(setVis({ i, j }));
-    //   }, 10);
-    //   // setVis({ i, j });
+    return false;
+  };
 
-    //   const neighbors: [number, number][] = [
-    //     [i - 1, j], // Up
-    //     [i + 1, j], // Down
-    //     [i, j - 1], // Left
-    //     [i, j + 1], // Right
-    //   ];
-
-    // for (const [ni, nj] of neighbors) {
-    //   if (isValid(ni, nj) && !cells[ni][nj].isVis && !cells[ni][nj].isWall) {
-    //     stack.push([ni, nj]);
-    //   }
-    // }
-    // }
-  }
+  await dfsIterative();
 };
 
 export default depthFirstSearch;

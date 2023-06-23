@@ -12,7 +12,8 @@ const initialState: ClickState = {
   clickOption: 'no',
   positionSelectOption: 'start',
   algorithm: 'BFS',
-  startIndex: [],
+  // Set an initial start
+  startIndex: [0, 0],
   endIndex: [],
 };
 
